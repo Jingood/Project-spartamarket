@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<h1> Product Detail </h1>
+
+<img style="width:150px;" src="{{ product.image.url }}">
+<h3>{{ product.title }}</h3>
+<p>{{ product.content }}</p>
+<p style="font-size: 30px;">{{ product.price|intcomma }}원</p>
+<a href="{% url 'users:profile' product.author.id %}">
+	<p>{{ product.author.username }}</p>
+</a>
+<p>{{ product.created_at }}</p>
+<p>{{ product.updated_at }}</p>
+
+<a href="{% url 'products:products' %}">목록 보기</a>
+
+{% if user == product.author %}
+	<a href="{% url 'products:product_update' product.pk %}">
+		<button type="submit">수정하기</button>
+	</a>
+	<form action="{% url 'products:product_delete' product.pk %}" method="POST">
+		{% csrf_token %}
+		<button type="submit">삭제하기</button>
+	</form>
+{% endif %}
+
+<form action="{% url 'products:like' product.pk %}" method="POST">
+	{% csrf_token %}
+	{% if request.user in product.like_users.all %}
+		<button class="btn btn-link text-danger">
+			<i class="fa-solid fa-heart">퉤퉤퉤</i>
+		</button>
+	{% else %}
+		<button class="btn btn-link text-danger">
+			<i class="fa-regular fa-heart">찜하기</i>
+		</button>
+	{% endif %}
+</form>
+{% endblock content %}

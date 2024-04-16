@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ user.username }}님 Profile Page</h1>
+<div>
+	<p>가입일: {{ user.date_joined }}</p>
+</div>
+<p>팔로워수: {{ user.followers.count }}</p>
+<p>팔로잉수: {{ user.followings.count }}</p>
+{% if  request.user == user %}
+	<a href="{% url "accounts:update" %}">회원정보 수정</a>
+{% endif %}
+
+<form action="{% url 'users:follow' user.id %}" method="POST">
+	{% csrf_token %}
+	{% if request.user in user.followers.all %}
+		<button>팔로우 풀기</button>
+	{% else %}
+		<button>팔로우 하기</button>
+	{% endif %}
+</form>
+
+<h2>등록한 물건</h2>
+<ul>
+	{% for product in user.products.all %}
+		<li>
+			<a href="{% url 'products:product_detail' product.id %}">
+				{{ product.title }}
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+
+<h2>찜한 물건</h2>
+<ul>
+	{% for product in  user.like_products.all %}
+		<li>
+			<a href="{% url 'products:product_detail' product.id %}">
+				{{ product.title }}
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+
+{% if request.user == user %}
+	<form action="{% url 'accounts:delete' %}" method="POST">
+		{% csrf_token %}
+		<input type="submit" value="회원 탈퇴">
+	</form>
+{% endif %}
+{% endblock content %}
