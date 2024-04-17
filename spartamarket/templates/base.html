@@ -9,15 +9,28 @@
 	<script src="https://kit.fontawesome.com/de34e7ed11.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="{% static "css/style.css" %}">
 	<title>Document</title>
-	<link
-		rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-	/>
+	<style>
+		body {
+            background-color: black;
+        }
+
+        .header {
+            width: 100%;
+            height: 37vh; 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .navbar {
+            background-color: transparent; /* 네비게이션 바 배경색을 투명으로 지정합니다. */
+        }
+	</style>
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg bg-body-tertiary">
 		<div class="container-fluid">
-			<a href="{% url 'products:products' %}">SpartaMarket</a>
+			<a class="navbar-brand" href="{% url 'products:products' %}">청순 수연</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -27,7 +40,7 @@
 					<li class="nav-item">
 						<form action="{% url 'accounts:logout' %}" method="POST">
 							{% csrf_token %}
-							<input type="submit" value="로그아웃">
+							<button type="submit" class="btn btn-link">로그아웃</button>
 						</form>
 					</li>
 					<li class="nav-item">
@@ -45,24 +58,7 @@
 		</div>
 		</div>
 	</nav>
-	<!-- <div class="navbar">
-		<a href="{% url 'products:products' %}">SpartaMarket</a>
-		{% if request.user.is_authenticated %}
-			<form action="{% url 'accounts:logout' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" value="로그아웃">
-			</form>
-			<a href="{% url 'accounts:update' %}">회원 정보 수정</a>
-			<a href="{% url 'users:profile' user.id %}">{{ request.user.username }}</a>
-			<form action="{% url 'accounts:delete' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" value="회원탈퇴">
-			</form>
-		{% else %}
-			<a href="{% url 'accounts:login' %}">로그인</a>
-			<a href="{% url 'accounts:signup' %}">회원가입</a>
-		{% endif %}
-	</div> -->
+	<div class="header" style="background-image: url({% static "default.jpg" %})"></div>
 	{% block content %}
 	{% endblock content %}
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
