@@ -12,7 +12,8 @@
 </a>
 <p>{{ product.created_at }}</p>
 <p>{{ product.updated_at }}</p>
-<p>{{ product.like_users.all | length}}회</p>
+<p>좋아요수: {{ product.like_users.all | length}}회</p>
+<p>조회수: {{ product.view }}회</p>
 <a href="{% url 'products:products' %}">목록 보기</a>
 
 {% if user == product.author %}
@@ -37,4 +38,5 @@
 		</button>
 	{% endif %}
 </form>
+<div class="hidden">{{ product.update_counter }}</div>
 {% endblock content %}

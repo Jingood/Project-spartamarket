@@ -16,6 +16,12 @@ class Product(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    view = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
+    
+    @property
+    def update_counter(self):
+        self.view = self.view + 1
+        self.save()

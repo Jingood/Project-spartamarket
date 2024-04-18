@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <h1>{{ user.username }}님 Profile Page</h1>
+{% if user.image.url is not null %}
+	<img style="width:300px;" src="{{ user.image.url }}">
+{% else %}
+	<img src="{% static "user.png" %}">
+{% endif %}
 <div>
 	<p>가입일: {{ user.date_joined }}</p>
 </div>
