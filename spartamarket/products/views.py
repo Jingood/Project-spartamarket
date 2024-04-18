@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Hashtag
 from .forms import ProductForm
 from django.views.decorators.http import require_POST, require_http_methods
-from django.db.models import Count
+from django.db.models import Count, Q
 
 
 def index(request):
@@ -105,3 +105,18 @@ def like(request, pk):
             product.like_users.add(request.user)
         return redirect('products:product_detail', product.pk)
     return redirect('products:login')
+
+
+def search(request):
+    query = None
+    products = None
+
+    if 'q' in request.GET:
+        query = request.GET.get('q')
+        products = Product.objects.all().filter(Q(title__icontains=query) | Q(
+            content__icontains=query) | Q(author__username__icontains=query))
+        context = {
+            'query': query,
+            'products': products
+        }
+    return render(request, 'products/search.html', context)

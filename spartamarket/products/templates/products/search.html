@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load humanize %}
 {% block content %}
 <form action="{% url "products:search" %}">
@@ -30,6 +30,8 @@
 				</div>
 			</div>
 		</div>
+	{% empty %}
+		<p>검색결과: 0개의 상품</p>
 	{% endfor %}
 </div>
 
