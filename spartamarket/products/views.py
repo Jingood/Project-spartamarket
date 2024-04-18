@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from .forms import ProductForm
 from django.views.decorators.http import require_POST, require_http_methods
+from django.db.models import Count
 
 
 def index(request):
@@ -9,9 +10,16 @@ def index(request):
 
 
 def products(request):
-    products = Product.objects.all().order_by('-pk')
-    context = {'products': products}
-    return render(request, 'products/products.html', context)
+    sort = request.GET.get('sort', '')
+    if sort == 'likes':
+        products = Product.objects.annotate(counts=Count(
+            'like_users')).order_by('-counts', '-pk')
+        context = {'products': products}
+        return render(request, 'products/products.html', context)
+    else:
+        products = Product.objects.all().order_by('-pk')
+        context = {'products': products}
+        return render(request, 'products/products.html', context)
 
 
 @require_http_methods(["GET", "POST"])
