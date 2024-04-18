@@ -7,6 +7,9 @@
 <h3>{{ product.title }}</h3>
 <p>{{ product.content }}</p>
 <p style="font-size: 30px;">{{ product.price|intcomma }}원</p>
+{% for tag in hashtags %}
+	<a>{{ tag.content }}</a> 
+{% endfor %}
 <a href="{% url 'users:profile' product.author.id %}">
 	<p>{{ product.author.username }}</p>
 </a>

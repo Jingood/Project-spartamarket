@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product
+from .models import Product, Hashtag
 from .forms import ProductForm
 from django.views.decorators.http import require_POST, require_http_methods
 from django.db.models import Count
@@ -31,6 +31,11 @@ def create(request):
                 product = form.save(commit=False)
                 product.author = request.user
                 product.save()
+                for word in product.content.split():
+                    if word.startswith('#'):
+                        hashtag, created = Hashtag.objects.get_or_create(
+                            content=word)
+                        product.hashtags.add(hashtag)
                 return redirect('products:product_detail', product.pk)
         else:
             form = ProductForm()
@@ -41,7 +46,11 @@ def create(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    context = {'product': product}
+    table = Product.hashtags.through.objects.filter(
+        product_id=pk).values('hashtag_id')
+    hashtags = Hashtag.objects.filter(id__in=table)
+    context = {'product': product,
+               'hashtags': hashtags}
     return render(request, 'products/product_detail.html', context)
 
 
@@ -54,6 +63,15 @@ def product_update(request, pk):
                 form = ProductForm(request.POST, instance=product)
                 if form.is_valid():
                     product = form.save()
+                    table = Product.hashtags.through.objects.filter(
+                        product_id=pk).values('hashtag_id')
+                    hashtags = Hashtag.objects.filter(id__in=table)
+                    hashtags.delete()
+                    for word in product.content.split():
+                        if word.startswith('#'):
+                            hashtag, created = Hashtag.objects.get_or_create(
+                                content=word)
+                            product.hashtags.add(hashtag)
                     return redirect('products:product_detail', product.pk)
             else:
                 form = ProductForm(instance=product)
