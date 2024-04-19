@@ -81,9 +81,14 @@ def change_password(request):
     if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
-            update_session_auth_hash(request, form.user)
-            return redirect('index')
+            New_password = form.cleaned_data.get("New password")
+            if User.objects.filter(password=New_password).exists:
+                messages.error(request, '이전 비밀번호와 같은 비밀번호로 설정할 수 없습니다.')
+                return render(request, 'accounts/change_password.html', {'form': form})
+            else:
+                form.save()
+                update_session_auth_hash(request, form.user)
+                return redirect('index')
     else:
         form = PasswordChangeForm(request.user)
     context = {'form': form}
